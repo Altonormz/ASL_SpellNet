@@ -3,29 +3,39 @@
 American Sign Language Final Project README
 
 ## Project Description
+This project aims to develop a deep learning model for American Sign Language (ASL) recognition.
+The goal of our project was to develop a robust model for recognizing American Sign Language (ASL) letters, numbers, and symbols from video input and generating a translated character sequence.   
+To accomplish this, we participated in the ASFLR Kaggle competition and advanced the state of the art.   
+For our approach, we leveraged the dataset provided by the competition, which consisted of 61,955 sequences extracted from various videos.   
+We implemented two models for ASL recognition: a baseline LSTM model and a more advanced transformer model.  
 
 ## Folder Structure
 The repository is organized into the following folders:
 
-- `data`: Contains the data used for the project, including the ASL images and corresponding labels.
-- `models`: Contains the trained models used for ASL recognition.
-- `notebooks`: Contains Jupyter notebooks used for data preprocessing, model training, and evaluation.
-- `reports`: Contains project reports, including training progress, evaluation metrics, error analysis, and visualization of predictions.
-- `src`: Contains source code and utility scripts used for data processing, model architecture, and evaluation.
+- `data`:
+- `models`:
+    * LSTM_model 
+    * Lstm_skip
+    * Transformer_model
+    * Transformer_skip
+- `notebooks`:
+    * load_dataset.ipynb - a script to load the dataset to Goggle Collaboratory /Kaggle
+    * EDA.ipynb - an EDA notebook of the dataset
+    * pltDot.ipynb - a notebook that adds the option to transform landmark data to pictures of dots or lines to use with Computer Vision models
+- `reports`:
+    * Milestone2 - a report on the progress of the project
+    * Milestone3 - a report on the progress of the project
 
 ## Data
-The data used for this project is located in the `data` folder. It includes a diverse collection of ASL images and their corresponding labels. The dataset was obtained from various sources, including ASL educational resources and online repositories. The images are in RGB format, and each image represents a specific ASL sign. The dataset is split into training, validation, and test sets to ensure proper evaluation of the models.
+Contains random videos with ASL sequences
 
 ## Models
-The trained models used for ASL recognition are stored in the `models` folder. The repository includes the CNN and LSTM models implemented for this project. The CNN model is designed to extract features from the ASL images, while the LSTM model leverages the temporal dependencies in the gestures. These models have been trained on the ASL dataset to learn the visual and temporal representations of different ASL signs.
+Contains Jupyter notebooks used for data preprocessing, model training, and evaluation.
 
 ## Notebooks
-The `notebooks` folder contains Jupyter notebooks used throughout the project. These notebooks cover various tasks, including data preprocessing, model training, and evaluation. They provide a step-by-step guide to reproduce the experiments and understand the project workflow.
+The `notebooks` folder contains Jupyter notebooks used throughout the project. These notebooks cover various tasks, including data extraction and preprocessing, model training, and evaluation. They provide a step-by-step guide to reproduce the experiments and understand the project workflow.
 
 ## Reports
-The `reports` folder includes project reports that document the progress, findings, and evaluation metrics. These reports highlight the training progress, evaluation metrics such as accuracy and loss, error analysis, and visualization of predictions. They provide a comprehensive assessment of the ASL recognition models and potential areas for improvement.
-
-## Source Code
-The `src` folder contains the source code and utility scripts used for data processing, model architecture, and evaluation. These scripts include functions and classes that are utilized in the notebooks and reports.
+Contains project reports we wrote throughout project milestones.
 
 Please refer to the individual folders for more details on their contents and how to use them for the project.
