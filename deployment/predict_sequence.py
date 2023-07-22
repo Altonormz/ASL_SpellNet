@@ -6,12 +6,17 @@ import tensorflow as tf
 with open('character_to_prediction_index.json') as json_file:
     ORD2CHAR = json.load(json_file)
 
+# Convert keys to integers
+ORD2CHAR = {int(k): v for k, v in ORD2CHAR.items()}
+
 MAX_PHRASE_LENGTH = 31 + 1
 PAD_TOKEN = 59
 N_UNIQUE_CHARACTERS = 59 + 3
 
+
 # Output Predictions to string
-def outputs2phrase(outputs):
+def outputs2phrase(outputs, ORD2CHAR):
+    ORD2CHAR = {int(k): v for k, v in ORD2CHAR.items()}
     if outputs.ndim == 2:
         outputs = np.argmax(outputs, axis=1)
 
@@ -38,7 +43,6 @@ def predict_phrase(batch_frames, model):
     # one-hot encode the outputs
     outputs_one_hot = tf.one_hot(phrase, depth=N_UNIQUE_CHARACTERS)
     return outputs_one_hot
-
 
 # # Assuming sequence is your array of shape (128, 164)
 # sequence = processed_sequence._shape(1, *processed_sequence.shape)  # reshapes sequence to (1, 128, 164)

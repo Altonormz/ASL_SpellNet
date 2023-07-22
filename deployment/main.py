@@ -9,8 +9,10 @@ from tensorflow.keras.models import model_from_json
 import video_with_landmarks
 import video_to_landmark_coordinates
 import preprocess_coordinates_data
-from load_model import Embedding, Encoder, Decoder, LandmarkEmbedding, EncoderTransformerBlock, MultiHeadAttention, DecoderTransformerBlock
+from load_model import Embedding, Encoder, Decoder, LandmarkEmbedding, EncoderTransformerBlock, MultiHeadAttention, \
+    DecoderTransformerBlock
 import predict_sequence
+
 # import Gradio_inference
 
 # Load the character to prediction index dictionary
@@ -53,30 +55,20 @@ custom_objects = {'Embedding': Embedding,
                   'MultiHeadAttention': MultiHeadAttention,
                   'DecoderTransformerBlock': DecoderTransformerBlock}
 
-# # Initiailizers
-# INIT_HE_UNIFORM = tf.keras.initializers.he_uniform
-# INIT_GLOROT_UNIFORM = tf.keras.initializers.glorot_uniform
-# INIT_ZEROS = tf.keras.initializers.constant(0.0)
-# # Activations
-# GELU = tf.keras.activations.gelu
-#
-# # Learning Rate
-# LEARNING_RATE = 1e-4
-
-
 # 1. load video and process it with landmarks
-# original_video_path = "videoplayback.mp4"
-# output_path = "videoplayback_with_landmarks.mp4"
-# video_with_landmarks.process_video_with_landmarks(original_video_path, output_path)
+original_video_path = "videoplayback.mp4"
+output_path = "videoplayback.mp4"
+video_with_landmarks.process_video_with_landmarks(original_video_path, output_path)
 
 # 2. extract landmarks
-# df = video_to_landmark_coordinates.video_to_landmarks(output_path, video_to_landmark_coordinates.generate_column_names())
+df = video_to_landmark_coordinates.video_to_landmarks(output_path,
+                                                      video_to_landmark_coordinates.generate_column_names())
 # Save the DataFrame to a CSV file
 # df.to_csv('landmarks.csv', index=False)
 
 # 3. preprocess landmarks
 # Read data from a CSV file
-df = pd.read_csv('landmarks.csv')
+# df = pd.read_csv('landmarks.csv')
 
 # Get the indices of columns of interest
 LEFT_HAND_IDXS0, LEFT_HAND_NAMES0 = preprocess_coordinates_data.get_idxs(df, ['left_hand'], ['z'])
@@ -84,43 +76,40 @@ RIGHT_HAND_IDXS0, RIGHT_HAND_NAMES0 = preprocess_coordinates_data.get_idxs(df, [
 LIPS_IDXS0, LIPS_NAMES0 = preprocess_coordinates_data.get_idxs(df, ['face'], ['z'], idxs_pos=LIPS_LANDMARK_IDXS)
 COLUMNS0 = np.concatenate((LEFT_HAND_NAMES0, RIGHT_HAND_NAMES0, LIPS_NAMES0))
 N_COLS0 = len(COLUMNS0)
-N_COLS = N_COLS0
+# N_COLS = N_COLS0
 
 df = df[COLUMNS0]  # select only columns of interest equal to N_COLS0
-hand_tracking_sequence = df.values.reshape(1, -1, N_COLS0)  # reshape after converting DataFrame to numpy array
-
+all_tracking_sequence = df.values.reshape(1, -1, N_COLS0)  # reshape after converting DataFrame to numpy array
 preprocess_layer_instance = preprocess_coordinates_data.PreprocessLayer()  # instantiate PreprocessLayer class
-processed_sequence = preprocess_layer_instance(hand_tracking_sequence)  # call instance with data
+processed_sequence = preprocess_layer_instance(all_tracking_sequence)  # call instance with data
 
-print(f'input sequence shape: {hand_tracking_sequence.shape}')
+print(f'input sequence shape: {all_tracking_sequence.shape}')
 print(f'processed sequence shape: {processed_sequence.shape}')
 
 # 4. load model
-
 json_file = open('model_architecture.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
 
 # load model architecture from JSON file
-loaded_model = model_from_json(loaded_model_json, custom_objects=custom_objects)
+model = model_from_json(loaded_model_json, custom_objects=custom_objects)
 
 # load weights into the new model
-loaded_model.load_weights("model.h5")
+model.load_weights("model.h5")
 
-loaded_model.summary(expand_nested=True, show_trainable=True, )
+# loaded_model.summary(expand_nested=True, show_trainable=True, )
 
 # 5. predict
-# reshapes sequence to (1, 128, 164)
-sequence = processed_sequence._shape(1, *processed_sequence.shape)
-
-# Now you can feed sequence to your prediction function
-pred_phrase_one_hot = predict_sequence.predict_phrase(sequence, loaded_model)
+sequence = np.expand_dims(processed_sequence, axis=0)  # change shape to (1,128,164)
 
 # Convert the one-hot encoded prediction to a string
-# Remember the output is one-hot encoded so we need to convert it to integers first
-pred_phrase = predict_sequence.outputs2phrase(tf.argmax(pred_phrase_one_hot, axis=-1).numpy())
+predicted_phrase_one_hot = predict_sequence.predict_phrase(sequence, model)
+# Assuming the output of predict_phrase is stored in 'outputs'
+predicted_phrase_one_hot = predicted_phrase_one_hot[0]  # Remove the batch dimension
+predicted_phrase = tf.argmax(predicted_phrase_one_hot, axis=-1).numpy()  # Convert one-hot encoding to index values
+print(predicted_phrase)
 
-print(pred_phrase)
+true_phrase = predict_sequence.outputs2phrase(predicted_phrase, ORD2CHAR)
+print(true_phrase)
 
-# 6. add output to video
-# 7. save video
+# 6. Gradio
