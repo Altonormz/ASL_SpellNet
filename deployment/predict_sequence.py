@@ -19,7 +19,7 @@ def outputs2phrase(outputs):
 
 
 @tf.function()
-def predict_phrase(batch_frames):
+def predict_phrase(batch_frames, model):
     batch_frames = tf.convert_to_tensor(batch_frames)
     phrase = tf.fill([batch_frames.shape[0], MAX_PHRASE_LENGTH], PAD_TOKEN)
     phrase = tf.cast(phrase, tf.int32)  # Cast phrase to int32 initially
@@ -40,14 +40,14 @@ def predict_phrase(batch_frames):
     return outputs_one_hot
 
 
-# Assuming sequence is your array of shape (128, 164)
-sequence = processed_sequence._shape(1, *processed_sequence.shape)  # reshapes sequence to (1, 128, 164)
-
-# Now you can feed sequence to your prediction function
-pred_phrase_one_hot = predict_phrase(sequence)
-
-# Convert the one-hot encoded prediction to a string
-# Remember the output is one-hot encoded so we need to convert it to integers first
-pred_phrase = outputs2phrase(tf.argmax(pred_phrase_one_hot, axis=-1).numpy())
-
-print(pred_phrase)
+# # Assuming sequence is your array of shape (128, 164)
+# sequence = processed_sequence._shape(1, *processed_sequence.shape)  # reshapes sequence to (1, 128, 164)
+#
+# # Now you can feed sequence to your prediction function
+# pred_phrase_one_hot = predict_phrase(sequence)
+#
+# # Convert the one-hot encoded prediction to a string
+# # Remember the output is one-hot encoded so we need to convert it to integers first
+# pred_phrase = outputs2phrase(tf.argmax(pred_phrase_one_hot, axis=-1).numpy())
+#
+# print(pred_phrase)

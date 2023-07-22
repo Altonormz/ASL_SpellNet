@@ -3,7 +3,7 @@ import mediapipe as mp
 import pandas as pd
 import numpy as np
 
-video_path = "fingerspelling_yonatan.mp4"
+video_path = "videoplayback_with_landmarks.mp4"
 
 def generate_column_names():
     columns = ['frame']
@@ -66,11 +66,7 @@ def video_to_landmarks(video_path, columns):
             df = df._append(frame_data, ignore_index=True)
             frame_count += 1
 
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
     cap.release()
-    cv2.destroyAllWindows()
 
     return df
 

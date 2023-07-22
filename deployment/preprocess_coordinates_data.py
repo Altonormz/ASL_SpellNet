@@ -2,9 +2,6 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 
-# Read data from a CSV file
-df = pd.read_csv('landmarks.csv')
-
 # Lips Landmark Face Ids
 # These indices are used for identifying specific features
 LIPS_LANDMARK_IDXS = np.array([
@@ -13,6 +10,9 @@ LIPS_LANDMARK_IDXS = np.array([
     78, 191, 80, 81, 82, 13, 312, 311, 310, 415,
     95, 88, 178, 87, 14, 317, 402, 318, 324, 308,
 ])
+
+# Read data from a CSV file
+df = pd.read_csv('landmarks.csv')
 
 
 def get_idxs(df, words_pos, words_neg=[], ret_names=True, idxs_pos=None):
@@ -67,8 +67,6 @@ N_TARGET_FRAMES = 128
 # Only X/Y axes are used
 N_DIMS0 = 2
 
-print(f'N_COLS0: {N_COLS0}')
-
 
 class PreprocessLayerNonNaN(tf.keras.layers.Layer):
     """
@@ -106,14 +104,6 @@ class PreprocessLayerNonNaN(tf.keras.layers.Layer):
         data = tf.squeeze(data, axis=[0])
 
         return data
-
-
-preprocess_layer_non_nan = PreprocessLayerNonNaN()
-
-N_NON_NAN_FRAMES = []
-frames = preprocess_layer_non_nan(df[COLUMNS0].values).numpy()
-N_NON_NAN_FRAMES.append(len(frames))
-print(N_NON_NAN_FRAMES)
 
 
 class PreprocessLayer(tf.keras.layers.Layer):
@@ -175,5 +165,5 @@ hand_tracking_sequence = df.values.reshape(1, -1, N_COLS0)  # reshape after conv
 preprocess_layer_instance = PreprocessLayer()  # instantiate PreprocessLayer class
 processed_sequence = preprocess_layer_instance(hand_tracking_sequence)  # call instance with data
 
-print(f'input sequence shape: {hand_tracking_sequence.shape}')
-print(f'processed sequence shape: {processed_sequence.shape}, NaN count: {np.isnan(processed_sequence).sum()}')
+# print(f'input sequence shape: {hand_tracking_sequence.shape}')
+# print(f'processed sequence shape: {processed_sequence.shape}')

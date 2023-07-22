@@ -1,4 +1,5 @@
 import tensorflow as tf
+
 # Epsilon value for layer normalisation
 LAYER_NORM_EPS = 1e-5
 
@@ -27,8 +28,6 @@ SOS_TOKEN = N_UNIQUE_CHARACTERS0 + 1
 
 # Length of Phrase + EOS Token
 MAX_PHRASE_LENGTH = 31 + 1
-
-
 
 # Mean/Standard Deviations of data used for normalizing
 MEANS = [0.69352776, 0.60659605, 0.53412515, 0.4970676, 0.48584947, 0.5761701,
@@ -61,35 +60,33 @@ MEANS = [0.69352776, 0.60659605, 0.53412515, 0.4970676, 0.48584947, 0.5761701,
          0.51952803, 0.5216051]
 
 STDS = [0.10834738, 0.10391748, 0.10296664, 0.10752504, 0.12336373, 0.10313869,
-         0.10744168, 0.11199072, 0.1193621, 0.10597368, 0.11260378, 0.1170811,
-         0.12447591, 0.11238337, 0.12130429, 0.12248141, 0.1267081, 0.1224081,
-         0.13301295, 0.13806877, 0.1437398, 0.08867608, 0.08839962, 0.08913112,
-         0.09358086, 0.09968524, 0.08439907, 0.09381164, 0.10565417, 0.11996002,
-         0.08592986, 0.1002507, 0.11805841, 0.13548768, 0.08893858, 0.1042807,
-         0.11806193, 0.13066797, 0.09283979, 0.1044982, 0.11446757, 0.12410894,
-         0.08575833, 0.08688664, 0.08871841, 0.09452496, 0.11280894, 0.08605019,
-         0.09069607, 0.09625262, 0.10480069, 0.08209087, 0.08907479, 0.09521613,
-         0.10375828, 0.0827678, 0.09389319, 0.09721766, 0.10260603, 0.0892784,
-         0.10309231, 0.11121955, 0.11911318, 0.08014706, 0.07939664, 0.07666104,
-         0.07640523, 0.07845239, 0.06779566, 0.06928173, 0.07995176, 0.09609538,
-         0.06776656, 0.07411631, 0.09502285, 0.11704809, 0.06976698, 0.07840788,
-         0.09568293, 0.11219386, 0.07334771, 0.07997227, 0.09204492, 0.10471888,
-         0.1324311, 0.13287905, 0.13296498, 0.13300247, 0.13251117, 0.13296743,
-         0.13352127, 0.13476767, 0.13467269, 0.13386367, 0.13339657, 0.13304512,
-         0.13318144, 0.13313657, 0.13394693, 0.13404495, 0.1343446, 0.13446471,
-         0.13349241, 0.13355125, 0.13414721, 0.13430822, 0.13283393, 0.13377732,
-         0.1346423, 0.13602652, 0.13584861, 0.13470158, 0.1339573, 0.13331288,
-         0.13342074, 0.133372, 0.13473015, 0.13483934, 0.13534908, 0.13551436,
-         0.13399816, 0.13405652, 0.1354323, 0.13537434, 0.06685787, 0.06737807,
-         0.06767439, 0.06927998, 0.06658512, 0.06643137, 0.0663855, 0.06645988,
-         0.06653237, 0.06679216, 0.06700299, 0.06721594, 0.06899743, 0.06748881,
-         0.06692849, 0.06752784, 0.06670087, 0.06690367, 0.06722134, 0.06834918,
-         0.06637124, 0.06663854, 0.06680202, 0.06691353, 0.06701645, 0.06724831,
-         0.06726662, 0.06730385, 0.06735906, 0.06739713, 0.06924284, 0.06767783,
-         0.06744281, 0.06815296, 0.06732813, 0.0676265, 0.06758311, 0.06880609,
-         0.06710069, 0.0672657]
-
-
+        0.10744168, 0.11199072, 0.1193621, 0.10597368, 0.11260378, 0.1170811,
+        0.12447591, 0.11238337, 0.12130429, 0.12248141, 0.1267081, 0.1224081,
+        0.13301295, 0.13806877, 0.1437398, 0.08867608, 0.08839962, 0.08913112,
+        0.09358086, 0.09968524, 0.08439907, 0.09381164, 0.10565417, 0.11996002,
+        0.08592986, 0.1002507, 0.11805841, 0.13548768, 0.08893858, 0.1042807,
+        0.11806193, 0.13066797, 0.09283979, 0.1044982, 0.11446757, 0.12410894,
+        0.08575833, 0.08688664, 0.08871841, 0.09452496, 0.11280894, 0.08605019,
+        0.09069607, 0.09625262, 0.10480069, 0.08209087, 0.08907479, 0.09521613,
+        0.10375828, 0.0827678, 0.09389319, 0.09721766, 0.10260603, 0.0892784,
+        0.10309231, 0.11121955, 0.11911318, 0.08014706, 0.07939664, 0.07666104,
+        0.07640523, 0.07845239, 0.06779566, 0.06928173, 0.07995176, 0.09609538,
+        0.06776656, 0.07411631, 0.09502285, 0.11704809, 0.06976698, 0.07840788,
+        0.09568293, 0.11219386, 0.07334771, 0.07997227, 0.09204492, 0.10471888,
+        0.1324311, 0.13287905, 0.13296498, 0.13300247, 0.13251117, 0.13296743,
+        0.13352127, 0.13476767, 0.13467269, 0.13386367, 0.13339657, 0.13304512,
+        0.13318144, 0.13313657, 0.13394693, 0.13404495, 0.1343446, 0.13446471,
+        0.13349241, 0.13355125, 0.13414721, 0.13430822, 0.13283393, 0.13377732,
+        0.1346423, 0.13602652, 0.13584861, 0.13470158, 0.1339573, 0.13331288,
+        0.13342074, 0.133372, 0.13473015, 0.13483934, 0.13534908, 0.13551436,
+        0.13399816, 0.13405652, 0.1354323, 0.13537434, 0.06685787, 0.06737807,
+        0.06767439, 0.06927998, 0.06658512, 0.06643137, 0.0663855, 0.06645988,
+        0.06653237, 0.06679216, 0.06700299, 0.06721594, 0.06899743, 0.06748881,
+        0.06692849, 0.06752784, 0.06670087, 0.06690367, 0.06722134, 0.06834918,
+        0.06637124, 0.06663854, 0.06680202, 0.06691353, 0.06701645, 0.06724831,
+        0.06726662, 0.06730385, 0.06735906, 0.06739713, 0.06924284, 0.06767783,
+        0.06744281, 0.06815296, 0.06732813, 0.0676265, 0.06758311, 0.06880609,
+        0.06710069, 0.0672657]
 
 # Initiailizers
 INIT_HE_UNIFORM = tf.keras.initializers.he_uniform
@@ -286,17 +283,19 @@ class EncoderTransformerBlock(tf.keras.layers.Layer):
     def from_config(cls, config):
         return cls(**config)
 
+
 # replaced softmax with softmax layer to support masked softmax
-def scaled_dot_product(q,k,v, softmax, attention_mask):
-    #calculates Q . K(transpose)
-    qkt = tf.matmul(q,k,transpose_b=True)
-    #caculates scaling factor
-    dk = tf.math.sqrt(tf.cast(q.shape[-1],dtype=tf.float32))
-    scaled_qkt = qkt/dk
+def scaled_dot_product(q, k, v, softmax, attention_mask):
+    # calculates Q . K(transpose)
+    qkt = tf.matmul(q, k, transpose_b=True)
+    # caculates scaling factor
+    dk = tf.math.sqrt(tf.cast(q.shape[-1], dtype=tf.float32))
+    scaled_qkt = qkt / dk
     softmax = softmax(scaled_qkt, mask=attention_mask)
-    z = tf.matmul(softmax,v)
-    #shape: (m,Tx,depth), same shape as q,k,v
+    z = tf.matmul(softmax, v)
+    # shape: (m,Tx,depth), same shape as q,k,v
     return z
+
 
 class MultiHeadAttention(tf.keras.layers.Layer):
     def __init__(self, d_model, num_of_heads, dropout, d_out=None):
@@ -336,6 +335,7 @@ class MultiHeadAttention(tf.keras.layers.Layer):
     def from_config(cls, config):
         return cls(**config)
 
+
 class DecoderTransformerBlock(tf.keras.layers.Layer):
     def __init__(self, units, num_heads, mlp_ratio, mha_dropout_ratio, mlp_dropout_ratio, **kwargs):
         super(DecoderTransformerBlock, self).__init__(**kwargs)
@@ -343,32 +343,36 @@ class DecoderTransformerBlock(tf.keras.layers.Layer):
         self.mha = MultiHeadAttention(units, num_heads, mha_dropout_ratio)
         self.layer_norm_2 = tf.keras.layers.LayerNormalization(epsilon=LAYER_NORM_EPS)
         self.mlp = tf.keras.Sequential([
-            tf.keras.layers.Dense(units * mlp_ratio, activation=GELU, kernel_initializer=INIT_GLOROT_UNIFORM, use_bias=False),
+            tf.keras.layers.Dense(units * mlp_ratio, activation=GELU, kernel_initializer=INIT_GLOROT_UNIFORM,
+                                  use_bias=False),
             tf.keras.layers.Dropout(mlp_dropout_ratio),
             tf.keras.layers.Dense(units, kernel_initializer=INIT_HE_UNIFORM, use_bias=False),
         ])
 
     def call(self, inputs, encoder_outputs, attention_mask, training=False):
-        x = self.layer_norm_1(inputs + self.mha(inputs, encoder_outputs, encoder_outputs, attention_mask=attention_mask))
+        x = self.layer_norm_1(
+            inputs + self.mha(inputs, encoder_outputs, encoder_outputs, attention_mask=attention_mask))
         x = self.layer_norm_2(x + self.mlp(x))
         return x
+
     def get_config(self):
         config = super().get_config()
-        config.update({"units": self.units, "num_heads": self.num_heads, "mlp_ratio": self.mlp_ratio, "mha_dropout_ratio": self.mha_dropout_ratio, "mlp_dropout_ratio": self.mlp_dropout_ratio})
+        config.update({"units": self.units, "num_heads": self.num_heads, "mlp_ratio": self.mlp_ratio,
+                       "mha_dropout_ratio": self.mha_dropout_ratio, "mlp_dropout_ratio": self.mlp_dropout_ratio})
         return config
 
     @classmethod
     def from_config(cls, config):
         return cls(**config)
 
-custom_objects={'Embedding': Embedding,
-                'Encoder': Encoder,
-                'Decoder': Decoder,
-                'LandmarkEmbedding': LandmarkEmbedding,
-                'EncoderTransformerBlock': EncoderTransformerBlock,
-                'MultiHeadAttention': MultiHeadAttention,
-                'DecoderTransformerBlock': DecoderTransformerBlock}
 
+custom_objects = {'Embedding': Embedding,
+                  'Encoder': Encoder,
+                  'Decoder': Decoder,
+                  'LandmarkEmbedding': LandmarkEmbedding,
+                  'EncoderTransformerBlock': EncoderTransformerBlock,
+                  'MultiHeadAttention': MultiHeadAttention,
+                  'DecoderTransformerBlock': DecoderTransformerBlock}
 
 # Load architecture
 from tensorflow.keras.models import model_from_json
@@ -384,5 +388,4 @@ loaded_model = model_from_json(loaded_model_json, custom_objects=custom_objects)
 # load weights into the new model
 loaded_model.load_weights("model.h5")
 
-
-loaded_model.summary(expand_nested=True, show_trainable=True,)
+# loaded_model.summary(expand_nested=True, show_trainable=True, )
