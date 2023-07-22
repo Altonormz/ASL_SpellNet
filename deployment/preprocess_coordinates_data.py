@@ -14,7 +14,6 @@ LIPS_LANDMARK_IDXS = np.array([
 # Read data from a CSV file
 df = pd.read_csv('landmarks.csv')
 
-
 def get_idxs(df, words_pos, words_neg=[], ret_names=True, idxs_pos=None):
     """
     Given a DataFrame and a list of words, this function will find all the column names
