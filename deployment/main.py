@@ -96,6 +96,22 @@ def predict_final_sequence(processed_sequence, model):
 
 
 def video_identity(video):
+    """
+    Processes a video, extracts landmarks, feeds them to a pre-trained model, and makes a prediction.
+
+    The processing pipeline consists of the following steps:
+    1. Process the video with landmarks.
+    2. Extract landmarks coordinates and save them into a DataFrame.
+    3. Preprocess the landmarks.
+    4. Load a pre-trained model.
+    5. Feed the preprocessed landmarks to the model and get a prediction.
+
+    Parameters:
+    video (str): Path to the video file.
+
+    Returns:
+    tuple: The path to the processed video with landmarks and the predicted outcome.
+    """
     # 1. load video and process it with landmarks
     original_video_path = video
     output_path = "video_landmarks.mp4"
