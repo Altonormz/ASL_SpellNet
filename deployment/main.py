@@ -148,8 +148,8 @@ iface = gr.Interface(video_identity,
                      [gr.outputs.Video(label="Processed video"), gr.outputs.Textbox(label="Predicted sequence")],
                      # Adding labels to the outputs
                      title="spellNET",  # Adding a title
-                     description="This application analyzes your video input to interpret American Sign Language (ASL) gestures corresponding to letters, numbers, and other signs. The output consists of the original video enhanced with overlaid landmarks that represent key points of ASL gestures, along with the predicted decoded ASL sequence expressed in textual form.",
                      # Adding a description
+                     description="This application analyzes your video input to interpret American Sign Language (ASL) gestures corresponding to letters, numbers, and other signs. The output consists of the original video enhanced with overlaid landmarks that represent key points of ASL gestures, along with the predicted decoded ASL sequence expressed in textual form.",
                      theme="abidlabs/pakistan",  # Changing the theme
                      examples=[[os.path.join(os.path.dirname(__file__), "yoni-phone.mp4")],
                                [os.path.join(os.path.dirname(__file__), "videoplayback.mp4")]],
