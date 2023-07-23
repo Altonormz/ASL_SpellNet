@@ -36,15 +36,6 @@ def outputs2phrase(outputs, ORD2CHAR):
     ORD2CHAR = {int(k): v for k, v in ORD2CHAR.items()} # Convert keys to integers
     if outputs.ndim == 2:
         outputs = np.argmax(outputs, axis=1)
-
-    return ''.join([ORD2
-
-
-
-    ORD2CHAR = {int(k): v for k, v in ORD2CHAR.items()} # Convert keys to integers
-    if outputs.ndim == 2:
-        outputs = np.argmax(outputs, axis=1)
-
     return ''.join([ORD2CHAR.get(s, '') for s in outputs])
 
 
