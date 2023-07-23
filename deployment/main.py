@@ -88,7 +88,6 @@ def predict_final_sequence(processed_sequence, model):
 
     # Convert the one-hot encoded prediction to a string
     predicted_phrase_one_hot = predict_sequence.predict_phrase(sequence, model)
-    # Assuming the output of predict_phrase is stored in 'outputs'
     predicted_phrase_one_hot = predicted_phrase_one_hot[0]  # Remove the batch dimension
     predicted_phrase = argmax(predicted_phrase_one_hot, axis=-1).numpy()  # Convert one-hot encoding to index values
     print(predicted_phrase)

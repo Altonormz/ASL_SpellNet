@@ -5,6 +5,14 @@ import numpy as np
 
 
 def generate_column_names():
+    """
+    Generate column names for a DataFrame that will store coordinates of landmarks.
+
+    Column names are formatted as '{coordinate}_{landmark_type}_{landmark_index}'.
+
+    Returns:
+    list: A list of strings representing the column names.
+    """
     columns = ['frame']
 
     # face columns
@@ -22,6 +30,20 @@ def generate_column_names():
 
 
 def video_to_landmarks(video_path, columns):
+    """
+    Extract face and hand landmarks from a video and store them in a DataFrame.
+
+    The video is processed frame by frame. For each frame, face and hand landmarks
+    are detected using MediaPipe's face mesh and hand models, respectively.
+    The coordinates of the landmarks are stored in a DataFrame.
+
+    Parameters:
+    video_path (str): Path to the video file.
+    columns (list): List of column names for the DataFrame.
+
+    Returns:
+    pd.DataFrame: A DataFrame where each row corresponds to a frame and each column corresponds to a landmark.
+    """
     mp_drawing = mp.solutions.drawing_utils
     mp_face_mesh = mp.solutions.face_mesh
     mp_hands = mp.solutions.hands
