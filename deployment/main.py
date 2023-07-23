@@ -95,9 +95,6 @@ def predict_final_sequence(processed_sequence, model):
     return final_prediction
 
 
-from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip
-
-
 def video_identity(video):
     # 1. load video and process it with landmarks
     original_video_path = video
