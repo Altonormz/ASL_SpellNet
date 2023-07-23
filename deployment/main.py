@@ -136,8 +136,6 @@ def video_identity(video):
     # load weights into the new model
     model.load_weights("model.h5")
 
-    # loaded_model.summary(expand_nested=True, show_trainable=True, )
-
     # 5. predict
     prediction = predict_final_sequence(processed_sequence, model)
     print(prediction)
@@ -147,7 +145,7 @@ def video_identity(video):
 
 iface = gr.Interface(video_identity,
                      gr.inputs.Video(label="Upload your video", source="upload"),  # Adding a label to the input
-                     [gr.outputs.Video(label="Processed video"), gr.outputs.Textbox(label="Predicted Outcome")],
+                     [gr.outputs.Video(label="Processed video"), gr.outputs.Textbox(label="Predicted sequence")],
                      # Adding labels to the outputs
                      title="spellNET",  # Adding a title
                      description="This application analyzes your video input to interpret American Sign Language (ASL) gestures corresponding to letters, numbers, and other signs. The output consists of the original video enhanced with overlaid landmarks that represent key points of ASL gestures, along with the predicted decoded ASL sequence expressed in textual form.",
