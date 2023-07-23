@@ -1,15 +1,18 @@
 import pandas as pd
 import numpy as np
 import tensorflow as tf
+import json
+
+# Convert the variables to the correct data type
+# Load the variables from the JSON file
+json_file_path = "variables.json"
+with open(json_file_path, 'r') as json_file:
+    variables_dict = json.load(json_file)
 
 # Lips Landmark Face Ids
-# These indices are used for identifying specific features
-LIPS_LANDMARK_IDXS = np.array([
-    61, 185, 40, 39, 37, 0, 267, 269, 270, 409,
-    291, 146, 91, 181, 84, 17, 314, 405, 321, 375,
-    78, 191, 80, 81, 82, 13, 312, 311, 310, 415,
-    95, 88, 178, 87, 14, 317, 402, 318, 324, 308,
-])
+LIPS_LANDMARK_IDXS = variables_dict['LIPS_LANDMARK_IDXS']
+N_TARGET_FRAMES = variables_dict['N_TARGET_FRAMES']
+N_DIMS0 = variables_dict['N_TARGET_FRAMES']
 
 # Read data from a CSV file
 df = pd.read_csv('landmarks.csv')
@@ -61,10 +64,6 @@ LIPS_IDXS0, LIPS_NAMES0 = get_idxs(df, ['face'], ['z'], idxs_pos=LIPS_LANDMARK_I
 COLUMNS0 = np.concatenate((LEFT_HAND_NAMES0, RIGHT_HAND_NAMES0, LIPS_NAMES0))
 N_COLS0 = len(COLUMNS0)
 N_COLS = N_COLS0
-N_TARGET_FRAMES = 128
-
-# Only X/Y axes are used
-N_DIMS0 = 2
 
 
 class PreprocessLayerNonNaN(tf.keras.layers.Layer):

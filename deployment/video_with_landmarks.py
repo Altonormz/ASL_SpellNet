@@ -1,23 +1,35 @@
 import cv2
 import mediapipe as mp
 
-def process_video_with_landmarks(input_video_path, output_video_path):
-    # Set up MediaPipe objects
+def process_video_with_landmarks(video_path, output_path, scale_percent=100):
+    """
+    Process a video to identify and draw landmarks on faces and hands.
+
+    Parameters:
+    video_path (str): The path to the input video file.
+    output_path (str): The path to the output video file.
+    scale_percent (int, optional): The percentage of the original size. Default is 100.
+    """
+    # MediaPipe solutions
     mp_drawing = mp.solutions.drawing_utils
     mp_face_mesh = mp.solutions.face_mesh
     mp_hands = mp.solutions.hands
 
     # Open the video file
-    cap = cv2.VideoCapture(input_video_path)
+    cap = cv2.VideoCapture(video_path)
 
     # Get the video properties
-    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) // 4
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) // 4
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = cap.get(cv2.CAP_PROP_FPS)
 
-    # Define the codec and create a VideoWriter object
+    # Calculate the scale dimensions
+    width = int(width * scale_percent / 100)
+    height = int(height * scale_percent / 100)
+
+    # Define the output video file
     fourcc = cv2.VideoWriter_fourcc(*'h264')
-    out = cv2.VideoWriter(output_video_path, fourcc, fps, (width, height))
+    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
     # Process each frame
     with mp_face_mesh.FaceMesh() as face_mesh, mp_hands.Hands() as hands:
@@ -25,6 +37,9 @@ def process_video_with_landmarks(input_video_path, output_video_path):
             success, frame = cap.read()
             if not success:
                 break
+
+            # Resize the frame
+            frame = cv2.resize(frame, (width, height), interpolation = cv2.INTER_AREA)
 
             # Convert the frame to RGB
             rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -58,16 +73,17 @@ def process_video_with_landmarks(input_video_path, output_video_path):
                         connection_drawing_spec=mp_drawing.DrawingSpec(color=landmark_color, thickness=1)
                     )
 
-            # Write the frame to the output video file
+            # Write the annotated frame to the output video
             out.write(frame)
 
+            # If 'q' is pressed on the keyboard, exit this loop
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+    # Close the video file
     cap.release()
     out.release()
+    cv2.destroyAllWindows()
 
-# Set the paths for the input and output videos
-video_path = "videoplayback.mp4"
-output_path = "videoplayback_with_landmarks.mp4"
-
-# Call the function to process the video with landmarks
-process_video_with_landmarks(video_path, output_path)
-
+# Now you can call the function with your video path
+# process_video_with_landmarks("the ASL ALPHABET in 15 seconds - American Sign Language.mp4","ASL_landmarks.mp4")

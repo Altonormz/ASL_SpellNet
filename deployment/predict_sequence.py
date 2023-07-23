@@ -2,21 +2,25 @@ import json
 import numpy as np
 import tensorflow as tf
 
+# Convert the variables to the correct data type
+# Load the variables from the JSON file
+json_file_path = "variables.json"
+with open(json_file_path, 'r') as json_file:
+    variables_dict = json.load(json_file)
+
+MAX_PHRASE_LENGTH = variables_dict['MAX_PHRASE_LENGTH']
+PAD_TOKEN = variables_dict['PAD_TOKEN']
+N_UNIQUE_CHARACTERS = variables_dict['N_UNIQUE_CHARACTERS']
+
 # Read Character to Ordinal Encoding Mapping
 with open('character_to_prediction_index.json') as json_file:
     ORD2CHAR = json.load(json_file)
 
-# Convert keys to integers
-ORD2CHAR = {int(k): v for k, v in ORD2CHAR.items()}
-
-MAX_PHRASE_LENGTH = 31 + 1
-PAD_TOKEN = 59
-N_UNIQUE_CHARACTERS = 59 + 3
 
 
 # Output Predictions to string
 def outputs2phrase(outputs, ORD2CHAR):
-    ORD2CHAR = {int(k): v for k, v in ORD2CHAR.items()}
+    ORD2CHAR = {int(k): v for k, v in ORD2CHAR.items()} # Convert keys to integers
     if outputs.ndim == 2:
         outputs = np.argmax(outputs, axis=1)
 

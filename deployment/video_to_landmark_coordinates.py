@@ -3,7 +3,6 @@ import mediapipe as mp
 import pandas as pd
 import numpy as np
 
-video_path = "videoplayback_with_landmarks.mp4"
 
 def generate_column_names():
     columns = ['frame']
@@ -20,6 +19,7 @@ def generate_column_names():
                 columns.append(f'{coordinate}_{hand}_{i}')
 
     return columns
+
 
 def video_to_landmarks(video_path, columns):
     mp_drawing = mp.solutions.drawing_utils
@@ -54,7 +54,8 @@ def video_to_landmarks(video_path, columns):
             # Process hand landmarks
             if results_hands.multi_hand_landmarks:
                 for hand_landmarks in results_hands.multi_hand_landmarks:
-                    if hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x < hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].x:
+                    if hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x < hand_landmarks.landmark[
+                        mp_hands.HandLandmark.THUMB_TIP].x:
                         hand_type = 'left_hand'
                     else:
                         hand_type = 'right_hand'
@@ -70,7 +71,8 @@ def video_to_landmarks(video_path, columns):
 
     return df
 
-df = video_to_landmarks(video_path, generate_column_names())
-
-# Save the DataFrame to a CSV file
-df.to_csv('landmarks.csv', index=False)
+# video_path = "videoplayback_with_landmarks.mp4"
+# df = video_to_landmarks(video_path, generate_column_names())
+#
+# # Save the DataFrame to a CSV file
+# df.to_csv('landmarks.csv', index=False)

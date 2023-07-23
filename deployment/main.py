@@ -25,27 +25,8 @@ json_file_path = "variables.json"
 with open(json_file_path, 'r') as json_file:
     variables_dict = json.load(json_file)
 
-# Convert the variables to the correct data type
+# Import lips landmark indices
 LIPS_LANDMARK_IDXS = np.array(variables_dict['LIPS_LANDMARK_IDXS'])
-LAYER_NORM_EPS = variables_dict['LAYER_NORM_EPS']
-UNITS_ENCODER = variables_dict['UNITS_ENCODER']
-UNITS_DECODER = variables_dict['UNITS_DECODER']
-NUM_BLOCKS_ENCODER = variables_dict['NUM_BLOCKS_ENCODER']
-NUM_BLOCKS_DECODER = variables_dict['NUM_BLOCKS_DECODER']
-NUM_HEADS = variables_dict['NUM_HEADS']
-MLP_RATIO = variables_dict['MLP_RATIO']
-EMBEDDING_DROPOUT = variables_dict['EMBEDDING_DROPOUT']
-MLP_DROPOUT_RATIO = variables_dict['MLP_DROPOUT_RATIO']
-MHA_DROPOUT_RATIO = variables_dict['MHA_DROPOUT_RATIO']
-CLASSIFIER_DROPOUT_RATIO = variables_dict['CLASSIFIER_DROPOUT_RATIO']
-N_TARGET_FRAMES = variables_dict['N_TARGET_FRAMES']
-N_UNIQUE_CHARACTERS = variables_dict['N_UNIQUE_CHARACTERS']
-N_UNIQUE_CHARACTERS0 = variables_dict['N_UNIQUE_CHARACTERS0']
-PAD_TOKEN = variables_dict['PAD_TOKEN']
-SOS_TOKEN = variables_dict['SOS_TOKEN']
-MAX_PHRASE_LENGTH = variables_dict['MAX_PHRASE_LENGTH']
-MEANS = np.array(variables_dict['MEANS'])
-STDS = np.array(variables_dict['STDS'])
 
 custom_objects = {'Embedding': Embedding,
                   'Encoder': Encoder,
@@ -58,8 +39,8 @@ custom_objects = {'Embedding': Embedding,
 
 def main():
     # 1. load video and process it with landmarks
-    original_video_path = "videoplayback.mp4"
-    output_path = "videoplayback_with_landmarks.mp4"
+    original_video_path = "the ASL ALPHABET in 15 seconds - American Sign Language.mp4"
+    output_path = "ASL_with_landmarks.mp4"
     video_with_landmarks.process_video_with_landmarks(original_video_path, output_path)
 
     # 2. extract landmarks coordinates
@@ -113,6 +94,7 @@ def main():
 
     true_phrase = predict_sequence.outputs2phrase(predicted_phrase, ORD2CHAR)
     print(true_phrase)
+
 
 # 6. Gradio
 if __name__ == "__main__":
