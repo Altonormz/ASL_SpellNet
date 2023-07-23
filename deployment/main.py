@@ -1,20 +1,15 @@
-import cv2
-import mediapipe as mp
-import pandas as pd
 import numpy as np
-import json
-import tensorflow as tf
-import gradio as gr
 import os
+import json
+from tensorflow.math import argmax
+import gradio as gr
 from tensorflow.keras.models import model_from_json
-
 import video_with_landmarks
 import video_to_landmark_coordinates
 import preprocess_coordinates_data
 from load_model import Embedding, Encoder, Decoder, LandmarkEmbedding, EncoderTransformerBlock, MultiHeadAttention, \
     DecoderTransformerBlock
 import predict_sequence
-
 
 # Load the character to prediction index dictionary
 character_to_prediction = 'character_to_prediction_index.json'
@@ -72,52 +67,37 @@ def process_and_print_sequence(df):
 
 
 def predict_final_sequence(processed_sequence, model):
+    """
+        This function makes a prediction on a given sequence using a pre-trained model.
+
+        The sequence is expanded along the 0th dimension to account for batch size.
+        The prediction is made using the `predict_phrase` function, which should return a one-hot encoded prediction.
+        This one-hot encoded prediction is then converted into index values using argmax.
+        Finally, these index values are converted into a string representation using the `outputs2phrase` function.
+
+        Args:
+        processed_sequence (numpy array): An array representing the sequence to make a prediction on.
+                                          This should be of shape (128,164).
+        model (tensorflow.python.keras.engine.training.Model): The pre-trained model to use for making predictions.
+
+        Returns:
+        final_prediction (str): The final prediction made by the model, represented as a string.
+        """
+    # change shape to (1,128,164)
     sequence = np.expand_dims(processed_sequence, axis=0)  # change shape to (1,128,164)
 
     # Convert the one-hot encoded prediction to a string
     predicted_phrase_one_hot = predict_sequence.predict_phrase(sequence, model)
     # Assuming the output of predict_phrase is stored in 'outputs'
     predicted_phrase_one_hot = predicted_phrase_one_hot[0]  # Remove the batch dimension
-    predicted_phrase = tf.argmax(predicted_phrase_one_hot, axis=-1).numpy()  # Convert one-hot encoding to index values
+    predicted_phrase = argmax(predicted_phrase_one_hot, axis=-1).numpy()  # Convert one-hot encoding to index values
     print(predicted_phrase)
     final_prediction = predict_sequence.outputs2phrase(predicted_phrase, ORD2CHAR)
     return final_prediction
 
 
-def main():
-    # 1. load video and process it with landmarks
-    original_video_path = "videoplayback.mp4"
-    output_path = "videoplayback_landmarks.mp4"
-    video_with_landmarks.process_video_with_landmarks(original_video_path, output_path)
+from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip
 
-    # 2. extract landmarks coordinates
-    df = video_to_landmark_coordinates.video_to_landmarks(output_path,
-                                                          video_to_landmark_coordinates.generate_column_names())
-    # Save the DataFrame to a CSV file
-    # df.to_csv('landmarks.csv', index=False)
-
-    # 3. preprocess landmarks
-    # Read data from a CSV file
-    # df = pd.read_csv('landmarks2.csv')
-    # df.drop(['sequence_id'],axis = 1, inplace=True)
-    # Assuming you have a DataFrame called df with tracking data
-    processed_sequence = process_and_print_sequence(df)
-
-    # 4. load model
-    # load model architecture from JSON file
-    model = model_from_json(loaded_model_json, custom_objects=custom_objects)
-
-    # load weights into the new model
-    model.load_weights("model.h5")
-
-    # loaded_model.summary(expand_nested=True, show_trainable=True, )
-
-    # 5. predict
-    prediciton = predict_final_sequence(processed_sequence, model)
-    print(prediciton)
-
-
-# 6. Gradio
 
 def video_identity(video):
     # 1. load video and process it with landmarks
@@ -135,7 +115,6 @@ def video_identity(video):
     # Read data from a CSV file
     # df = pd.read_csv('landmarks2.csv')
     # df.drop(['sequence_id'],axis = 1, inplace=True)
-    # Assuming you have a DataFrame called df with tracking data
     processed_sequence = process_and_print_sequence(df)
 
     # 4. load model
@@ -148,15 +127,23 @@ def video_identity(video):
     # loaded_model.summary(expand_nested=True, show_trainable=True, )
 
     # 5. predict
-    prediciton = predict_final_sequence(processed_sequence, model)
-    print(prediciton)
-    return output_path, prediciton
+    prediction = predict_final_sequence(processed_sequence, model)
+    print(prediction)
+
+    return output_path, prediction
+
 
 iface = gr.Interface(video_identity,
-                    gr.Video(source="upload"),
-                    [gr.Video(source="upload"), gr.Textbox()])
-
+                     gr.inputs.Video(label="Upload your video", source="upload"),  # Adding a label to the input
+                     [gr.outputs.Video(label="Processed video"), gr.outputs.Textbox(label="Predicted Outcome")],
+                     # Adding labels to the outputs
+                     title="spellNET",  # Adding a title
+                     description="This application analyzes your video input to interpret American Sign Language (ASL) gestures corresponding to letters, numbers, and other signs. The output consists of the original video enhanced with overlaid landmarks that represent key points of ASL gestures, along with the predicted decoded ASL sequence expressed in textual form.",
+                     # Adding a description
+                     theme="abidlabs/pakistan",  # Changing the theme
+                     examples=[[os.path.join(os.path.dirname(__file__), "yoni-phone.mp4")],
+                               [os.path.join(os.path.dirname(__file__), "videoplayback.mp4")]],
+                     cache_examples=True)
 
 if __name__ == "__main__":
-    #main()
-    iface.launch()
+    iface.launch(share=True)
