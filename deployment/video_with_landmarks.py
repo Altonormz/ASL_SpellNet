@@ -29,7 +29,8 @@ def process_video_with_landmarks(video_path, output_path, scale_percent=100):
 
     # Define the output video file
     fourcc = cv2.VideoWriter_fourcc(*'h264')
-    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+    out_fps = fps / 0.66  # Set the output fps to half of the original fps
+    out = cv2.VideoWriter(output_path, fourcc, out_fps, (width, height))
 
     # Process each frame
     with mp_face_mesh.FaceMesh() as face_mesh, mp_hands.Hands() as hands:
